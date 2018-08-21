@@ -6,6 +6,8 @@ var express = require("express"),
     app = express(),
     MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines",
     mongoose = require("mongoose"),
+    // databaseUrl = "mongoHeadlines",
+    // collections = "urlData",
     PORT = process.env.PORT || 3000
 ;
 

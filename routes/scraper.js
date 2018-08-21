@@ -1,4 +1,9 @@
 module.exports = function (app, cheerio, request){
+
+    app.get("/", function(req, res){
+        res.render("index");
+    });
+
     app.get("/link-sets", function(req, res){
         request("https://old.reddit.com/r/technology", function(err, response, html){
             var $ = cheerio.load(html),
