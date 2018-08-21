@@ -21,6 +21,7 @@ module.exports = function (app, cheerio, request){
                 });
             });
             console.log(results);
+            res.json(results);
         });
     });
 };
