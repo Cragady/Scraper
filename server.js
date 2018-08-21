@@ -4,11 +4,20 @@ var express = require("express"),
     cheerio = require("cheerio"),
     request = require("request"),
     app = express(),
+    MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines",
+    mongoose = require("mongoose"),
     PORT = process.env.PORT || 3000
 ;
 
-require("./routes/mongo")(app);
+//sets different database connection when deployed
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
+//uses the routes set in ./routes
+require("./routes/mongo")(app);
+require("./routes/scraper")(app, cheerio, request);
+
+//the rest of the server
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
