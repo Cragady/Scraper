@@ -5,8 +5,9 @@ function scrapinIt(){
         $.ajax("/link-sets", {
             type: "GET"
         }).then((returnUrl)=>{
+            $("#dump").empty();
             $.each(returnUrl, function(i, newb){
-                $("#dump").append(`<div>${returnUrl[i].title}</div>`);
+                $("#dump").append(`<div>${returnUrl[i].headline}</div>`);
             });
         });
     });

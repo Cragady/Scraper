@@ -6,8 +6,7 @@ var express = require("express"),
     app = express(),
     MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines",
     mongoose = require("mongoose"),
-    // databaseUrl = "mongoHeadlines",
-    // collections = "urlData",
+    db = require("./models"),
     PORT = process.env.PORT || 3000
 ;
 
@@ -16,8 +15,8 @@ mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
 //uses the routes set in ./routes
-require("./routes/mongo")(app);
-require("./routes/scraper")(app, cheerio, request);
+require("./routes/mongo")(app, db);
+require("./routes/scraper")(app, db, cheerio, request);
 
 //the rest of the server
 app.use(express.static("public"));
