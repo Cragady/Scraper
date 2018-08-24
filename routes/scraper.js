@@ -6,26 +6,30 @@ module.exports = function (app, db, cheerio, request){
 
     app.get("/link-sets", function(req, res){
         request("https://techcrunch.com/", function(err, response, html){
-            var $ = cheerio.load(html),
-                results = []
-            ;
-    
+            var $ = cheerio.load(html);
+            
             $(".river--homepage").children().each(function(i, element){
                 var title = $(element).find("a.post-block__title__link").text().trim(),
-                    summary = $(element).find("div.post-block__content").text().trim(),
-                    link = $(element).find("a.post-block__title__link").attr("href")
+                summary = $(element).find("div.post-block__content").text().trim(),
+                link = $(element).find("a.post-block__title__link").attr("href"),
+                results = []
                 ;
         
-                results.push({
-                    headline: title,
-                    summary: summary,
-                    url: link
+                if(title){
+                    results.push({
+                        headline: title,
+                        summary: summary,
+                        url: link
+                    });
+                };
+                db.Links.create(results).then(function(err, found){
+                    if(err) {
+                        res.status(404);
+                    };
                 });
             });
-            console.log(results);
-            db.Links.create(results).then(function(err, found){
-                res.json(results);
-            });
+
+            res.end();
         });
     });
 };

@@ -1,8 +1,11 @@
 module.exports = function(app, db){
-    app.get("/read-data-test", function(req, res){
-        db.Links.find({}, function(err, response){
+    app.get("/read-data-url", function(req, res){
+        db.Links.find().limit(10)
+        .sort({$natural: -1})
+        .exec(function(err, response){
             if(err) throw err;
-            res.json("yes");
-        })
+            // console.log(response);
+            res.json(response);
+        });
     });
 };
