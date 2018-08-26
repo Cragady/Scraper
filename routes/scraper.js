@@ -4,6 +4,22 @@ module.exports = function (app, db, cheerio, request){
         res.render("index");
     });
 
+    app.get("/login", function(req, res){
+        res.render("sin-log");
+    });
+
+    app.get("/lougout", function(req, res, next){
+        if(req.session){
+            req.session.destroy(function(err){
+                if(err){
+                    return next(err);
+                } else {
+                    return res.redirect('/');
+                }
+            })
+        }
+    })
+
     app.get("/link-sets", function(req, res){
         request("https://techcrunch.com/", function(err, response, html){
             var $ = cheerio.load(html);

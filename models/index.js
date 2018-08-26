@@ -1,4 +1,5 @@
 module.exports = {
     Links: require("./Links"),
-    Comments: require("./Comments")
+    Comments: require("./Comments"),
+    Users: require("./Users"),
 };
