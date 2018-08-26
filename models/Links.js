@@ -17,7 +17,7 @@ var LinksSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Comments"
         }
-    ]
+    ],
 });
 
 var Links = mongoose.model("Links", LinksSchema);

@@ -5,6 +5,7 @@ var express = require("express"),
     cheerio = require("cheerio"),
     request = require("request"),
     app = express(),
+    mongojs = require("mongojs"),
     MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines",
     mongoose = require("mongoose"),
     db = require("./models"),
@@ -28,7 +29,7 @@ app.use(session({
 }));
 
 //uses the routes set in ./routes
-require("./routes/mongo")(app, db);
+require("./routes/mongo")(app, db, mongojs);
 require("./routes/scraper")(app, db, cheerio, request);
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));

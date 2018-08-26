@@ -14,7 +14,6 @@ var UsersSchema = new Schema({
         type: String,
         required: true,
     },
-    comments: Array,
     savedArr: Array,
 });
 

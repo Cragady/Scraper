@@ -3,7 +3,10 @@ var mongoose = require("mongoose"),
 ;
 
 var CommentsSchema = new Schema({
-    op: String,
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "Users",
+    },
     comment: {
         type: String,
         validate: [
@@ -11,8 +14,8 @@ var CommentsSchema = new Schema({
                 return input.length >= 1;
             },
             "Please create a valid comment"
-        ]
-    }
+        ],
+    },
 });
 
 var Comments = mongoose.model("Comments", CommentsSchema);

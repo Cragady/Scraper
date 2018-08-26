@@ -1,7 +1,5 @@
 function dbCall(){
-    $.ajax("/read-data-url", {
-        type: "GET"
-    }).then(returnUrl =>{
+    $.get("/read-data-url", ()=>{}).then(returnUrl =>{
         $("#dump").empty();
         $.each(returnUrl, function(i, newb){
             $("#dump").append(`<section class="card row dump-scraper my-2 text-center p-1">
@@ -19,7 +17,7 @@ function dbCall(){
                     <section class="comment-dump col-12 border-top mt-3" id="${returnUrl[i]._id}">
                         <button class="btn comment-view m-2" data-id="${returnUrl[i]._id}">Toggle Comments</button>
                             
-                        <div class="c-view-switch">
+                        <div class="c-view-switch" style="display: none">
                             <div class="para-com-dump">
                                 <p class="card m-1 text-left px-1">test
                                 test</p>
@@ -55,31 +53,32 @@ function comClick(){
                 console.log(userCreds);
                 //this is a testing call, change it
                 //to the appropriate values when testing is through
-                $.ajax("/new-user-create", {
-                    type: "POST",
-                    data: {
-                        username: $("#username-input").val().trim(),
-                        password: $("#password-input").val().trim(),
-                    }
-                }).then((data) =>{
+                $.post("/new-user-create", userCreds, ()=>{})
+                .then((data) =>{
                     $('body').replaceWith(data);   
                 });
                 console.log("pre-fire");
                 break;
             case $(this).hasClass("comment-view"):
-                $(".c-view-switch").toggle("display");
+                var idGrab = $(this).attr("data-id");
+                $("#" + idGrab).find(".c-view-switch").toggle("display");
                 break;
             case $(this).hasClass("c-sub"):
                 var idGrab = $(this).attr("data-id");
                 var cSect = "#" + idGrab;
-                console.log(cSect);
-                var commentMade = $(cSect).find("textarea").val().trim();
-                console.log(commentMade);
-                if(commentMade !== ""){
-                    $(cSect).find("textarea").val("");
-                    $(cSect).find(".para-com-dump").append(`
-                        <p class="card m-1 text-left px-1">${commentMade}</p>
-                    `)
+                var infoPass = {
+                    comment: $(cSect).find("textarea").val().trim(),
+                    l_id: idGrab,
+                };
+                if(infoPass.comment !== ""){
+                    $.post("/bringing-a-comment-into-the-world", infoPass, ()=>{
+                    }).then(()=>{
+                        location.reload();
+                    });
+                    // $(cSect).find("textarea").val("");
+                    // $(cSect).find(".para-com-dump").append(`
+                    //     <p class="card m-1 text-left px-1">${commentMade}</p>
+                    // `)
                 }
                 break;
             case $(this).hasClass("tester"):
@@ -94,9 +93,7 @@ function comClick(){
 
 function scrapinIt(){
     $("#da-scraper").click(function(){
-        $.ajax("/link-sets", {
-            type: "GET"
-        }).then(()=>{
+        $.get("/link-sets", ()=>{}).then(()=>{
             dbCall();
         });
     });

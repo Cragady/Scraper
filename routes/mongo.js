@@ -1,4 +1,4 @@
-module.exports = function(app, db){
+module.exports = function(app, db, mongojs){
 
     
     app.get("/tester", function(req, res){
@@ -30,6 +30,23 @@ module.exports = function(app, db){
                     return res.redirect('/login-test');
                 };
             });
+        };
+    });
+
+    app.post("/bringing-a-comment-into-the-world", function(req, res){
+        var commentMade = {
+            comment: req.body.comment,
+            user: req.session.userId,
+        };
+        if(commentMade.comment){
+            db.Comments.create(commentMade)
+                .then(dbComments => {
+                    console.log(dbComments._id);
+                    return db.Links.findOneAndUpdate({_id: mongojs.ObjectId(req.body.l_id)}, {$push: {comments: dbComments._id}});
+                })
+                .catch(function(err){
+                    res.json(err);
+                });
         };
     });
 
