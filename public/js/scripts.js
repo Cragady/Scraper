@@ -45,10 +45,22 @@ function dbCall(){
         if(comms){
             $.each(comms, (i) =>{
                 var finder = comms[i].link;
-                $("#" + finder).find(".para-com-dump")
-                    .append(`<p class="card m-1 text-left px-1 data-user="${comms[i].user}">
-                    ${comms[i].comment}
-                    </p>`);
+                if(comms[i].user === content.seshId){
+                    $("#" + finder).find(".para-com-dump")
+                        .append(`
+                                <p class="card m-1 text-left px-1 data-user="${comms[i].user}">
+                                    ${comms[i].comment}
+                                    <button type="button" title="Delete Comment" style="max-width: 25px;" class="btn btn-danger text-center p-0 m-1">
+                                    X
+                                    </button>
+                                </p>
+                        `);
+                } else {
+                    $("#" + finder).find(".para-com-dump")
+                        .append(`<p class="card m-1 text-left px-1 data-user="${comms[i].user}">
+                        ${comms[i].comment}
+                        </p>`);
+                };
             });
         };
     });
@@ -101,15 +113,28 @@ function comClick(){
                         };
                         var idParam = response.link;
                         $.get("/comments-show/" + idParam, ()=>{
-                        }).then(theseComms => {
+                        }).then(incomingComms => {
+                            var theseComms = incomingComms.comments;
                             var finder = theseComms[0].link;
                             $("#" + finder).find(".para-com-dump").empty();
                             $("#" + finder).find("textarea").val("");
                             $.each(theseComms, (i) =>{
-                                $("#" + finder).find(".para-com-dump")
-                                    .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
-                                    ${theseComms[i].comment}
-                                    </p>`);
+                                if(theseComms[i].user === incomingComms.seshId){
+                                    $("#" + finder).find(".para-com-dump")
+                                        .append(`
+                                        <p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
+                                            ${theseComms[i].comment}
+                                            <button type="button" title="Delete Comment" style="max-width: 25px;" class="btn btn-danger text-center p-0 m-1">
+                                            X
+                                            </button>
+                                        </p>
+                                        `);
+                                } else {
+                                    $("#" + finder).find(".para-com-dump")
+                                        .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
+                                        ${theseComms[i].comment}
+                                        </p>`);
+                                }
                             });
                         });
                     });

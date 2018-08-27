@@ -77,6 +77,7 @@ module.exports = function(app, db, mongojs){
                     var newRes = {
                         links: response,
                         comments: res2,
+                        seshId: req.session.userId
                     };
                     res.json(newRes);
                 });
@@ -92,7 +93,19 @@ module.exports = function(app, db, mongojs){
             link: mongojs.ObjectId(finder)
         }, function(err, found){
             if(err) throw err;
-            res.json(found);
+            var commsPasser = {
+                comments: found,
+                seshId: req.session.userId
+            }
+            res.json(commsPasser);
         });
+    });
+
+    app.put("/saving-an-artice-from-a-firey-death", function(req, res){
+        db.Users.update(
+            {_id: req.session.userId}, 
+            {savedArr: {$push: req.body.artId}}, function(err, artUpped){
+                res.json(artUpped);
+            });
     });
 };
