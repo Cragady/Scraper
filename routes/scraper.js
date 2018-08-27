@@ -5,7 +5,11 @@ module.exports = function (app, db, cheerio, request){
     });
 
     app.get("/login", function(req, res){
-        res.render("sin-log");
+        if(req.session.userId){
+            res.redirect("/");
+        } else {
+            res.render("sin-log");
+        }
     });
 
     app.get("/lougout", function(req, res, next){

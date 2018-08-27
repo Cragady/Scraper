@@ -28,12 +28,13 @@ app.use(session({
     saveUninitialized: false,
 }));
 
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 //uses the routes set in ./routes
 require("./routes/mongo")(app, db, mongojs);
 require("./routes/scraper")(app, db, cheerio, request);
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
 app.listen(PORT, function(){
     console.log("Server is listening to you . . . ON PORT: %s. http://localhost:%s/",
         PORT,

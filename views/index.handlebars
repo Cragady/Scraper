@@ -1,7 +1,28 @@
-<h1 class="text-center">Scruncher</h1>
+<h1 class="text-center">Newscraper</h1>
 
 <section class="text-center">
-    <button class="tester">Bop it!</button> <button>Pull it!</button>
-    <button>Spin it!</button> <button id="da-scraper">Scrape it!</button>
+    <button class="tester">Latest 10</button>
+    <button>All Articles</button> 
+    <button id="da-scraper">Scrape Articles</button>
     <section id="dump"></section>
 </section>
+
+<div class="modal" id="login-req"tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login Required</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Please login to comment on, or save articles.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="window.location='/login';">Login</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

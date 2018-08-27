@@ -12,12 +12,6 @@ var LinksSchema = new Schema({
         type: String,
         unique: true
     },
-    comments: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Comments"
-        }
-    ],
 });
 
 var Links = mongoose.model("Links", LinksSchema);

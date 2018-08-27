@@ -1,21 +1,27 @@
 function dbCall(){
-    $.get("/read-data-url", ()=>{}).then(returnUrl =>{
+    $.get("/read-data-url", ()=>{}).then((content) =>{
+        if(content.comments){
+            var comms = content.comments,
+                linns = content.links;
+        } else {
+            var linns = content;
+        }
         $("#dump").empty();
-        $.each(returnUrl, function(i, newb){
+        $.each(linns, function(i){
             $("#dump").append(`<section class="card row dump-scraper my-2 text-center p-1">
                 <div class="headline-scrape card-header">
-                    <h3>${returnUrl[i].headline}</h3>
+                    <h3>${linns[i].headline}</h3>
                 </div>
                 <div class="summary-scrape">
-                    ${returnUrl[i].summary}...
+                    ${linns[i].summary}...
                 </div>
                 <div class="url-scrape">
-                    <a href="${returnUrl[i].url}" target="_blank" class="mb-1">Read Me!</a>
+                    <a href="${linns[i].url}" target="_blank" class="mb-1">Read Me!</a>
                 </div>
                 <div class="m-2 card-footer">
-                <button class="btn article-save m-1" data-id="${returnUrl[i]._id}">Save Article</button>
-                    <section class="comment-dump col-12 border-top mt-3" id="${returnUrl[i]._id}">
-                        <button class="btn comment-view m-2" data-id="${returnUrl[i]._id}">Toggle Comments</button>
+                <button class="btn article-save m-1" data-id="${linns[i]._id}">Save Article</button>
+                    <section class="comment-dump col-12 border-top mt-3" id="${linns[i]._id}">
+                        <button class="btn comment-view m-2" data-id="${linns[i]._id}">Toggle Comments</button>
                             
                         <div class="c-view-switch" style="display: none">
                             <div class="para-com-dump">
@@ -27,7 +33,7 @@ function dbCall(){
                             <div class="input-group mb-3">
                                 <textarea type="text" class="form-control" placeholder="Comment Here" aria-label="Recipient's username" aria-describedby="basic-addon2"></textarea>
                                 <div class="input-group-append">
-                                    <button class="input-group-text btn c-sub" data-id="${returnUrl[i]._id}" id="basic-addon2">submit</button>
+                                    <button class="input-group-text btn c-sub" data-id="${linns[i]._id}" id="basic-addon2">submit</button>
                                 </div>
                             </div>
                         </div>
@@ -35,6 +41,16 @@ function dbCall(){
                 </div>
             </section>`);
         });
+
+        if(comms){
+            $.each(comms, (i) =>{
+                var finder = comms[i].link;
+                $("#" + finder).find(".para-com-dump")
+                    .append(`<p class="card m-1 text-left px-1 data-user="${comms[i].user}">
+                    ${comms[i].comment}
+                    </p>`);
+            });
+        };
     });
 };
 
@@ -45,19 +61,25 @@ function comClick(){
         click: function(e){
         e.preventDefault();
         switch(true){
+            case $(this).attr("id") === "signup":
+                var userCreds = {
+                    username: $("#username-input").val().trim(),
+                    password: $("#password-input").val().trim(),
+                };
+                $.post("/new-user-create", userCreds, ()=>{})
+                .then((data) =>{
+                    window.location.replace(data);   
+                });
+                break;
             case $(this).attr("id") === "login":
                 var userCreds = {
                     username: $("#username-input").val().trim(),
                     password: $("#password-input").val().trim(),
                 };
-                console.log(userCreds);
-                //this is a testing call, change it
-                //to the appropriate values when testing is through
-                $.post("/new-user-create", userCreds, ()=>{})
-                .then((data) =>{
-                    $('body').replaceWith(data);   
-                });
-                console.log("pre-fire");
+                $.post("/break-in", userCreds, ()=>{})
+                .then(data =>{
+                    window.location.replace(data);
+                })
                 break;
             case $(this).hasClass("comment-view"):
                 var idGrab = $(this).attr("data-id");
@@ -72,17 +94,32 @@ function comClick(){
                 };
                 if(infoPass.comment !== ""){
                     $.post("/bringing-a-comment-into-the-world", infoPass, ()=>{
-                    }).then(()=>{
-                        location.reload();
+                    }).then((response)=>{
+                        if(response === "needs login"){
+                            $("#login-req").modal("show");
+                            return;
+                        };
+                        var idParam = response.link;
+                        $.get("/comments-show/" + idParam, ()=>{
+                        }).then(theseComms => {
+                            var finder = theseComms[0].link;
+                            $("#" + finder).find(".para-com-dump").empty();
+                            $("#" + finder).find("textarea").val("");
+                            $.each(theseComms, (i) =>{
+                                $("#" + finder).find(".para-com-dump")
+                                    .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
+                                    ${theseComms[i].comment}
+                                    </p>`);
+                            });
+                        });
                     });
-                    // $(cSect).find("textarea").val("");
-                    // $(cSect).find(".para-com-dump").append(`
-                    //     <p class="card m-1 text-left px-1">${commentMade}</p>
-                    // `)
-                }
+                };
                 break;
-            case $(this).hasClass("tester"):
-                console.log("tester-class");
+            case $(this).hasClass("article-save"):
+                $.put("/article-saver", artNum, ()=>{
+                }).then(()=>{
+                    console.log("saved!");
+                });
             default: 
                 console.log("please do something");
                 return;

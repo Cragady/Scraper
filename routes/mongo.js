@@ -1,18 +1,7 @@
 module.exports = function(app, db, mongojs){
 
-    
-    app.get("/tester", function(req, res){
-        console.log(req.session.userId);
-        res.end();
-    });
-
-    app.get("/login-test", function(req, res){
-        res.render("loginTest");
-    })
-
     app.post("/new-user-create", function(req, res){
         //checking if the proper credentials are given
-        console.log(req.body);
         if(req.body.username &&
             req.body.password){
             //sets the userData
@@ -21,32 +10,55 @@ module.exports = function(app, db, mongojs){
                 password: req.body.password,
             };
             //throw it in the db
-            db.Users.create(userData, function(err, user){
-                if(err){
-                    return next(err);
-                } else {
-                    console.log(user._id);
-                    req.session.userId = user._id;
-                    return res.redirect('/login-test');
-                };
-            });
+            try{
+                db.Users.create(userData, function(err, user){
+                    if(err){
+                        res.json("/login");
+                    } else {
+                        req.session.userId = user._id;
+                        res.json("/");
+                    };
+                });
+            } catch(err){
+                res.json("/login");
+            }
         };
+    });
+
+    app.post("/break-in", function(req, res){
+
+        function cbackAuth(errIn, userIn){
+            if(userIn && (errIn === null)){
+                req.session.userId = userIn._id;
+                res.json("/");
+            } else {
+                res.json("/login");
+            }
+        };
+
+        db.Users.authenticate(
+                req.body.username, 
+                req.body.password,
+                cbackAuth
+        )
     });
 
     app.post("/bringing-a-comment-into-the-world", function(req, res){
         var commentMade = {
             comment: req.body.comment,
             user: req.session.userId,
+            link: req.body.l_id,
         };
-        if(commentMade.comment){
+        if(commentMade.comment && commentMade.user){
             db.Comments.create(commentMade)
-                .then(dbComments => {
-                    console.log(dbComments._id);
-                    return db.Links.findOneAndUpdate({_id: mongojs.ObjectId(req.body.l_id)}, {$push: {comments: dbComments._id}});
+                .then((made) => {
+                    res.json(made);
                 })
                 .catch(function(err){
                     res.json(err);
                 });
+        } else {
+            res.json("needs login");
         };
     });
 
@@ -55,8 +67,32 @@ module.exports = function(app, db, mongojs){
         .sort({$natural: -1})
         .exec(function(err, response){
             if(err) throw err;
-            // console.log(response);
-            res.json(response);
+            var resPass = [];
+            for(var i = 0; i < response.length; i++){
+                resPass.push(response[i]._id);
+            };
+            try{
+                //db.Comments.find({link: mongojs.ObjectId("5b8367649fac37590c0bcde8")}, function(err, res2){
+                db.Comments.find({link: {$in: resPass}}, function(err, res2){
+                    var newRes = {
+                        links: response,
+                        comments: res2,
+                    };
+                    res.json(newRes);
+                });
+            } catch(err) {
+                res.json(response);
+            };
+        });
+    });
+
+    app.get("/comments-show/:finder", function(req, res){
+        var finder = req.params.finder;
+        db.Comments.find({
+            link: mongojs.ObjectId(finder)
+        }, function(err, found){
+            if(err) throw err;
+            res.json(found);
         });
     });
 };

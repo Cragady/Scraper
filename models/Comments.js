@@ -7,6 +7,10 @@ var CommentsSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Users",
     },
+    link: {
+        type: Schema.Types.ObjectId,
+        ref: "Links",
+    },
     comment: {
         type: String,
         validate: [
