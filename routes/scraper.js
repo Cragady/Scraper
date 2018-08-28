@@ -1,7 +1,16 @@
 module.exports = function (app, db, cheerio, request){
 
     app.get("/", function(req, res){
-        res.render("index");
+        if(req.session.userId){
+            db.Users.find({_id: req.session.userId}, function(err, user){
+                var login = {
+                    user: user[0].username
+                }
+                res.render("index", {login});
+            });
+        } else {
+            res.render("index");
+        }
     });
 
     app.get("/login", function(req, res){
@@ -12,17 +21,16 @@ module.exports = function (app, db, cheerio, request){
         }
     });
 
-    app.get("/lougout", function(req, res, next){
+    app.post("/logout", function(req, res, next){
         if(req.session){
             req.session.destroy(function(err){
-                if(err){
-                    return next(err);
-                } else {
-                    return res.redirect('/');
-                }
-            })
-        }
-    })
+                if(err) throw err;
+                res.end();
+            });
+        } else {
+            res.end();
+        };
+    });
 
     app.get("/link-sets", function(req, res){
         request("https://techcrunch.com/", function(err, response, html){

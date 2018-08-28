@@ -42,6 +42,10 @@ function dbCall(){
     });
 };
 
+// function logCheck(){
+//     $.get("user-chec", ()=> {})
+// };
+
 function appendix(contC, usId, multi){
     var finder = contC[0].link;
     if(contC){
@@ -112,6 +116,12 @@ function comClick(){
                 .then(data =>{
                     window.location.replace(data);
                 })
+                break;
+            case $(this).attr("id") === "break-out":
+                $.post("/logout", ()=>{})
+                    .then(() =>{
+                        window.location.reload();
+                    });
                 break;
             case $(this).hasClass("comment-view"):
                 var idGrab = $(this).attr("data-id");
