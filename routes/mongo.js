@@ -65,7 +65,6 @@ module.exports = function(app, db, mongojs){
 
     app.delete("/comment-death", function(req, res){
         if(req.session.userId === req.body.commOp){
-            console.log("hit");
             db.Comments.deleteOne({_id: req.body.commId}, function(err, dont){
                 if(err) throw err;
                 res.end();
