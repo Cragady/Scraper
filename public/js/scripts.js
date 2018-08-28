@@ -32,7 +32,7 @@ function dbCall(){
                                     <button class="input-group-text btn c-sub" data-id="${linns[i]._id}" id="basic-addon2">submit</button>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </section>
                 </div>
@@ -56,7 +56,6 @@ function appendix(contC, usId, multi){
             if(contC[i].user === usId){
                 $("#" + finder).find(".para-com-dump")
                     .append(`
-                            <hr>
                             <div class="card">
                                 <p class="card-header">You Wrote:</p>
                                 <p class="card m-1 text-left px-1">
@@ -77,7 +76,6 @@ function appendix(contC, usId, multi){
             } else {
                 $("#" + finder).find(".para-com-dump")
                     .append(`
-                    <hr>
                     <p class="card m-1 text-left px-1 data-user="${contC[i].user}">
                         ${contC[i].comment}
                     </p>
