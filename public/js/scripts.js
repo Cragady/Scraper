@@ -24,11 +24,7 @@ function dbCall(){
                         <button class="btn comment-view m-2" data-id="${linns[i]._id}">Toggle Comments</button>
                             
                         <div class="c-view-switch" style="display: none">
-                            <div class="para-com-dump">
-                                <p class="card m-1 text-left px-1">test
-                                test</p>
-                                
-                            </div>
+                            <div class="para-com-dump"></div>
 
                             <div class="input-group mb-3">
                                 <textarea type="text" class="form-control" placeholder="Comment Here" aria-label="Recipient's username" aria-describedby="basic-addon2"></textarea>
@@ -36,6 +32,7 @@ function dbCall(){
                                     <button class="input-group-text btn c-sub" data-id="${linns[i]._id}" id="basic-addon2">submit</button>
                                 </div>
                             </div>
+                            
                         </div>
                     </section>
                 </div>
@@ -69,7 +66,8 @@ function appendix(contC, usId, multi){
                                     <button type="button" title="Delete Comment" 
                                         class="killing-comments btn btn-danger p-1 my-2 text-left" 
                                         data-user="${contC[i].user}"
-                                        data-comment="${contC[i]._id}">
+                                        data-comment="${contC[i]._id}"
+                                        data-link="${contC[i].link}">
                                     Delete Comment
                                     </button>
                                 </div>
@@ -144,14 +142,21 @@ function comClick(){
                     });
                 };
                 break;
-            case $(this).hasClass(".killing-comments"):
+            case $(this).hasClass("killing-comments"):
                 var commSpecs = {
                     commOp: $(this).attr("data-user"),
-                    commId: $(this).attr("data-comment")
+                    commId: $(this).attr("data-comment"),
+                    commLink: $(this).attr("data-link")
                 };
-                $.put("/comment-death", commSpecs, ()=>{
-                }).then(res =>{
-                    
+                $.ajax("/comment-death", {
+                    type: "DELETE",
+                    data: commSpecs
+                }).then(() =>{
+                    $.get("/comments-show/" + commSpecs.commLink, ()=>{
+                    }).then(response =>{
+                        var survivingComms = response.comments;
+                        appendix(survivingComms, response.seshId);
+                    });
                 });
                 break;
             case $(this).hasClass("article-save"):

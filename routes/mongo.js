@@ -62,9 +62,14 @@ module.exports = function(app, db, mongojs){
         };
     });
 
-    app.put("/comment-death", function(req, res){
-
-        db.Comments.update({});
+    app.delete("/comment-death", function(req, res){
+        if(req.session.userId === req.body.commOp){
+            console.log("hit");
+            db.Comments.deleteOne({_id: req.body.commId}, function(err, dont){
+                if(err) throw err;
+                res.end();
+            });
+        };
     });
 
     app.get("/read-data-url", function(req, res){
