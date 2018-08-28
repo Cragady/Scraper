@@ -42,41 +42,6 @@ function dbCall(){
             </section>`);
         });
         appendix(comms, content.seshId, true);
-        // if(comms){
-        //     $.each(comms, (i) =>{
-        //         var finder = comms[i].link;
-        //         if(comms[i].user === content.seshId){
-        //             $("#" + finder).find(".para-com-dump")
-        //                 .append(`
-        //                         <hr>
-        //                         <div class="card">
-        //                             <p class="card-header">You Wrote:</p>
-        //                             <p class="card m-1 text-left px-1">
-        //                                 ${comms[i].comment}
-        //                             </p>
-        //                             <div class="col-6 p-0">
-        //                                 <button type="button" title="Delete Comment" 
-        //                                     class="killing-comments btn btn-danger p-1 my-2 text-left" 
-        //                                     data-user="${comms[i].user}"
-        //                                     data-comment="${comms[i]._id}">
-        //                                 Delete Comment
-        //                                 </button>
-        //                             </div>
-        //                         </div>
-        //                         <hr>
-        //                 `);
-        //         } else {
-        //             $("#" + finder).find(".para-com-dump")
-        //                 .append(`
-        //                 <hr>
-        //                 <p class="card m-1 text-left px-1 data-user="${comms[i].user}">
-        //                     ${comms[i].comment}
-        //                 </p>
-        //                 <hr>
-        //                 `);
-        //         };
-        //     });
-        // };
     });
 };
 
@@ -175,37 +140,6 @@ function comClick(){
                         }).then(incomingComms => {
                             var theseComms = incomingComms.comments;
                             appendix(theseComms, incomingComms.seshId);
-                            // var finder = theseComms[0].link;
-                            // $("#" + finder).find(".para-com-dump").empty();
-                            // $("#" + finder).find("textarea").val("");
-                            // $.each(theseComms, (i) =>{
-                            //     if(theseComms[i].user === incomingComms.seshId){
-                            //         $("#" + finder).find(".para-com-dump")
-                            //             .append(`
-                            //             <hr>
-                            //             <div class="card">
-                            //                 <p class="card-header">You Wrote:</p>
-                            //                 <p class="card m-1 text-left px-1">
-                            //                     ${theseComms[i].comment}
-                            //                 </p>
-                            //                 <div class="col-6 p-0">
-                            //                     <button type="button" 
-                            //                         data-user="${theseComms[i].user}" title="Delete Comment" 
-                            //                         class="killing-comments btn btn-danger p-1 my-2 text-left"
-                            //                         data-comment="${theseComms[i]._id}">
-                            //                     Delete Comment
-                            //                     </button>
-                            //                 </div>
-                            //             </div>
-                            //             <hr>
-                            //             `);
-                            //     } else {
-                            //         $("#" + finder).find(".para-com-dump")
-                            //             .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
-                            //             ${theseComms[i].comment}
-                            //             </p>`);
-                            //     }
-                            // });
                         });
                     });
                 };
