@@ -153,15 +153,34 @@ function comClick(){
                     $.get("/comments-show/" + commSpecs.commLink, ()=>{
                     }).then(response =>{
                         var survivingComms = response.comments;
-                        appendix(survivingComms, response.seshId);
+                        if(survivingComms){
+                            appendix(survivingComms, response.seshId);
+                        } else {
+                            $("#" + commSpecs.commLink).find(".para-com-dump").empty();
+                        };
                     });
                 });
                 break;
             case $(this).hasClass("article-save"):
-                $.put("/article-saver", artNum, ()=>{
-                }).then(()=>{
+                var artSpecs = {
+                    artId: $(this).attr("data-id")
+                };
+                $.ajax("/saving-an-artice-from-a-firey-death", {
+                    type: "PUT",
+                    data: artSpecs
+                }).then((response) =>{
+                    if(response === "needs login"){
+                        $("#login-req").modal("show");
+                        return;
+                    };
                     console.log("saved!");
                 });
+                break;
+            case $(this).attr("id") === "da-scraper":
+                $.get("/link-sets", ()=>{}).then(()=>{
+                    dbCall();
+                });
+                break;
             default: 
                 console.log("please do something");
                 return;
@@ -170,16 +189,7 @@ function comClick(){
     }, "button");
 };
 
-function scrapinIt(){
-    $("#da-scraper").click(function(){
-        $.get("/link-sets", ()=>{}).then(()=>{
-            dbCall();
-        });
-    });
-};
-
 $(document).ready(function(){
-    scrapinIt();
     dbCall();
     comClick();
 });

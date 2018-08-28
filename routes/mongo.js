@@ -13,6 +13,7 @@ module.exports = function(app, db, mongojs){
             try{
                 db.Users.create(userData, function(err, user){
                     if(err){
+                        console.log(err);
                         res.json("/login");
                     } else {
                         req.session.userId = user._id;
@@ -103,6 +104,9 @@ module.exports = function(app, db, mongojs){
             link: mongojs.ObjectId(finder)
         }, function(err, found){
             if(err) throw err;
+            if(found.length === 0){
+                return res.end();
+            }
             var commsPasser = {
                 comments: found,
                 seshId: req.session.userId
@@ -112,10 +116,26 @@ module.exports = function(app, db, mongojs){
     });
 
     app.put("/saving-an-artice-from-a-firey-death", function(req, res){
-        db.Users.update(
-            {_id: req.session.userId}, 
-            {savedArr: {$push: req.body.artId}}, function(err, artUpped){
-                res.json(artUpped);
-            });
+        if(req.session.userId){
+            db.Users.update(
+                {_id: req.session.userId}, 
+                {$addToSet: {savedArr: req.body.artId}}, function(err, artUpped){
+                    res.json(artUpped);
+                });
+        } else {
+            res.json("needs login");
+        };
+    });
+
+    app.put("/dooming-an-article", function(req, res){
+        if(req.session.userId){
+            db.Users.update(
+                {id: req.session.userId},
+                {$pull: {savedArr: req.body.artId}}, function(err, artUpped){
+                    res.json(artUpped);
+                });
+        } else {
+            res.json("needs login");
+        };
     });
 };
