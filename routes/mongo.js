@@ -62,6 +62,11 @@ module.exports = function(app, db, mongojs){
         };
     });
 
+    app.put("/comment-death", function(req, res){
+
+        db.Comments.update({});
+    });
+
     app.get("/read-data-url", function(req, res){
         db.Links.find().limit(10)
         .sort({$natural: -1})

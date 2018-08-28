@@ -41,29 +41,88 @@ function dbCall(){
                 </div>
             </section>`);
         });
-
-        if(comms){
-            $.each(comms, (i) =>{
-                var finder = comms[i].link;
-                if(comms[i].user === content.seshId){
-                    $("#" + finder).find(".para-com-dump")
-                        .append(`
-                                <p class="card m-1 text-left px-1 data-user="${comms[i].user}">
-                                    ${comms[i].comment}
-                                    <button type="button" title="Delete Comment" style="max-width: 25px;" class="btn btn-danger text-center p-0 m-1">
-                                    X
-                                    </button>
-                                </p>
-                        `);
-                } else {
-                    $("#" + finder).find(".para-com-dump")
-                        .append(`<p class="card m-1 text-left px-1 data-user="${comms[i].user}">
-                        ${comms[i].comment}
-                        </p>`);
-                };
-            });
-        };
+        appendix(comms, content.seshId, true);
+        // if(comms){
+        //     $.each(comms, (i) =>{
+        //         var finder = comms[i].link;
+        //         if(comms[i].user === content.seshId){
+        //             $("#" + finder).find(".para-com-dump")
+        //                 .append(`
+        //                         <hr>
+        //                         <div class="card">
+        //                             <p class="card-header">You Wrote:</p>
+        //                             <p class="card m-1 text-left px-1">
+        //                                 ${comms[i].comment}
+        //                             </p>
+        //                             <div class="col-6 p-0">
+        //                                 <button type="button" title="Delete Comment" 
+        //                                     class="killing-comments btn btn-danger p-1 my-2 text-left" 
+        //                                     data-user="${comms[i].user}"
+        //                                     data-comment="${comms[i]._id}">
+        //                                 Delete Comment
+        //                                 </button>
+        //                             </div>
+        //                         </div>
+        //                         <hr>
+        //                 `);
+        //         } else {
+        //             $("#" + finder).find(".para-com-dump")
+        //                 .append(`
+        //                 <hr>
+        //                 <p class="card m-1 text-left px-1 data-user="${comms[i].user}">
+        //                     ${comms[i].comment}
+        //                 </p>
+        //                 <hr>
+        //                 `);
+        //         };
+        //     });
+        // };
     });
+};
+
+function appendix(contC, usId, multi){
+    var finder = contC[0].link;
+    if(contC){
+        if(!multi){
+            $("#" + finder).find(".para-com-dump").empty();
+            $("#" + finder).find("textarea").val("");
+        }
+        $.each(contC, function(i){
+            if(multi){
+                finder = contC[i].link;
+            };
+            if(contC[i].user === usId){
+                $("#" + finder).find(".para-com-dump")
+                    .append(`
+                            <hr>
+                            <div class="card">
+                                <p class="card-header">You Wrote:</p>
+                                <p class="card m-1 text-left px-1">
+                                    ${contC[i].comment}
+                                </p>
+                                <div class="col-6 text-left ml-2 p-0">
+                                    <button type="button" title="Delete Comment" 
+                                        class="killing-comments btn btn-danger p-1 my-2 text-left" 
+                                        data-user="${contC[i].user}"
+                                        data-comment="${contC[i]._id}">
+                                    Delete Comment
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+                    `);
+            } else {
+                $("#" + finder).find(".para-com-dump")
+                    .append(`
+                    <hr>
+                    <p class="card m-1 text-left px-1 data-user="${contC[i].user}">
+                        ${contC[i].comment}
+                    </p>
+                    <hr>
+                    `);
+            };
+        });
+    }
 };
 
 //do things here for commenting/saving articles after user
@@ -115,30 +174,51 @@ function comClick(){
                         $.get("/comments-show/" + idParam, ()=>{
                         }).then(incomingComms => {
                             var theseComms = incomingComms.comments;
-                            var finder = theseComms[0].link;
-                            $("#" + finder).find(".para-com-dump").empty();
-                            $("#" + finder).find("textarea").val("");
-                            $.each(theseComms, (i) =>{
-                                if(theseComms[i].user === incomingComms.seshId){
-                                    $("#" + finder).find(".para-com-dump")
-                                        .append(`
-                                        <p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
-                                            ${theseComms[i].comment}
-                                            <button type="button" title="Delete Comment" style="max-width: 25px;" class="btn btn-danger text-center p-0 m-1">
-                                            X
-                                            </button>
-                                        </p>
-                                        `);
-                                } else {
-                                    $("#" + finder).find(".para-com-dump")
-                                        .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
-                                        ${theseComms[i].comment}
-                                        </p>`);
-                                }
-                            });
+                            appendix(theseComms, incomingComms.seshId);
+                            // var finder = theseComms[0].link;
+                            // $("#" + finder).find(".para-com-dump").empty();
+                            // $("#" + finder).find("textarea").val("");
+                            // $.each(theseComms, (i) =>{
+                            //     if(theseComms[i].user === incomingComms.seshId){
+                            //         $("#" + finder).find(".para-com-dump")
+                            //             .append(`
+                            //             <hr>
+                            //             <div class="card">
+                            //                 <p class="card-header">You Wrote:</p>
+                            //                 <p class="card m-1 text-left px-1">
+                            //                     ${theseComms[i].comment}
+                            //                 </p>
+                            //                 <div class="col-6 p-0">
+                            //                     <button type="button" 
+                            //                         data-user="${theseComms[i].user}" title="Delete Comment" 
+                            //                         class="killing-comments btn btn-danger p-1 my-2 text-left"
+                            //                         data-comment="${theseComms[i]._id}">
+                            //                     Delete Comment
+                            //                     </button>
+                            //                 </div>
+                            //             </div>
+                            //             <hr>
+                            //             `);
+                            //     } else {
+                            //         $("#" + finder).find(".para-com-dump")
+                            //             .append(`<p class="card m-1 text-left px-1 data-user="${theseComms[i].user}">
+                            //             ${theseComms[i].comment}
+                            //             </p>`);
+                            //     }
+                            // });
                         });
                     });
                 };
+                break;
+            case $(this).hasClass(".killing-comments"):
+                var commSpecs = {
+                    commOp: $(this).attr("data-user"),
+                    commId: $(this).attr("data-comment")
+                };
+                $.put("/comment-death", commSpecs, ()=>{
+                }).then(res =>{
+                    
+                });
                 break;
             case $(this).hasClass("article-save"):
                 $.put("/article-saver", artNum, ()=>{
