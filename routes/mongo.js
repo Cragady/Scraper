@@ -119,6 +119,7 @@ module.exports = function(app, db, mongojs){
             db.Users.update(
                 {_id: req.session.userId}, 
                 {$addToSet: {savedArr: req.body.artId}}, function(err, artUpped){
+                    if(err) throw err;
                     res.json(artUpped);
                 });
         } else {
@@ -129,12 +130,29 @@ module.exports = function(app, db, mongojs){
     app.put("/dooming-an-article", function(req, res){
         if(req.session.userId){
             db.Users.update(
-                {id: req.session.userId},
+                {_id: req.session.userId},
                 {$pull: {savedArr: req.body.artId}}, function(err, artUpped){
+                    if(err) throw err;
+                    console.log(artUpped);
                     res.json(artUpped);
                 });
         } else {
             res.json("needs login");
+        };
+    });
+
+    app.get("/user-chec", function(req, res){
+        if(req.session.userId){
+            db.Users.find({_id: req.session.userId}, function(err, founs){
+                if(err) throw err;
+                console.log(founs.savedArr);
+                resToFront = {
+                  arr: founs[0].savedArr
+                };
+                res.json(resToFront);
+            });
+        } else {
+            res.json("login required");
         };
     });
 };

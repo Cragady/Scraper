@@ -10,14 +10,14 @@ var UsersSchema = new Schema({
         required: true,
         trim: true,
     },
+    savedArr: {
+        type: Array,
+    },
     password: {
         type: String,
         required: true,
     },
-    savedArr: {
-        type: Schema.Types.ObjectId,
-        ref: "Links"
-    },
+    
 });
 
 //prehook for scrambling  words to eveusd234 sd4$8sdleSd988&^lk

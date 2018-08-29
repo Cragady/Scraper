@@ -1,50 +1,35 @@
 function dbCall(){
-    $.get("/read-data-url", ()=>{}).then((content) =>{
-        if(content.comments){
-            var comms = content.comments,
-                linns = content.links;
-        } else {
-            var linns = content;
-        }
-        $("#dump").empty();
-        $.each(linns, function(i){
-            $("#dump").append(`<section class="card row dump-scraper my-2 text-center p-1">
-                <div class="headline-scrape card-header">
-                    <h3>${linns[i].headline}</h3>
-                </div>
-                <div class="summary-scrape">
-                    ${linns[i].summary}...
-                </div>
-                <div class="url-scrape">
-                    <a href="${linns[i].url}" target="_blank" class="mb-1">Read Me!</a>
-                </div>
-                <div class="m-2 card-footer">
-                <button class="btn article-save m-1" data-id="${linns[i]._id}">Save Article</button>
-                    <section class="comment-dump col-12 border-top mt-3" id="${linns[i]._id}">
-                        <button class="btn comment-view m-2" data-id="${linns[i]._id}">Toggle Comments</button>
-                            
-                        <div class="c-view-switch" style="display: none">
-                            <div class="para-com-dump"></div>
-
-                            <div class="input-group mb-3">
-                                <textarea type="text" class="form-control" placeholder="Comment Here" aria-label="Recipient's username" aria-describedby="basic-addon2"></textarea>
-                                <div class="input-group-append">
-                                    <button class="input-group-text btn c-sub" data-id="${linns[i]._id}" id="basic-addon2">submit</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </section>
-                </div>
-            </section>`);
+        $.get("/read-data-url", ()=>{}).then((content) =>{
+            logCheck();
+            if(content.comments){
+                    var comms = content.comments,
+                        linns = content.links;
+                    appendix(comms, content.seshId, true);
+            } else {
+                location.reload();
+            };
         });
-        appendix(comms, content.seshId, true);
-    });
 };
 
-// function logCheck(){
-//     $.get("user-chec", ()=> {})
-// };
+function logCheck(){
+    $.get("user-chec", ()=> {}).then((res)=>{
+        if(res === "login required"){
+            return;
+        } else {
+            console.log("arssty" + res);
+            console.log(res.arr);
+            var arrIter = res.arr;
+            $.each(arrIter, function(i){
+                $("#save-article-" + arrIter[i]).empty();
+                $("#save-article-" + arrIter[i]).append(`
+                    <h3 class="text-success">Saved!</h3>
+                    <button class="btn article-unsave btn-danger m-1" data-id="${arrIter[i]}">Unsave Article</button>
+                `);
+            });
+            //code here
+        };
+    });
+};
 
 function appendix(contC, usId, multi){
     var finder = contC[0].link;
@@ -186,9 +171,28 @@ function comClick(){
                     console.log("saved!");
                 });
                 break;
+            case $(this).hasClass("article-unsave"):
+                var artSpecs = {
+                    artId: $(this).attr("data-id")
+                };
+                $.ajax("/dooming-an-article", {
+                    type: "PUT",
+                    data: artSpecs
+                }).then((response) =>{
+                    if(response === "needs login"){
+                        $("#login-req").modal("show");
+                        return;
+                    } else {
+                        $("#save-article-" + artSpecs.artId).empty();
+                        $("#save-article-" + artSpecs.artId).append(`
+                            <button class="btn article-save m-1" data-id="${artSpecs.artId}">Save Article</button>
+                        `);
+                    };
+                });
+                break;
             case $(this).attr("id") === "da-scraper":
                 $.get("/link-sets", ()=>{}).then(()=>{
-                    dbCall();
+                    location.reload();
                 });
                 break;
             default: 
@@ -201,5 +205,6 @@ function comClick(){
 
 $(document).ready(function(){
     dbCall();
+    // appendix(comms, content.seshId, true);
     comClick();
 });

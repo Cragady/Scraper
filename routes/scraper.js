@@ -1,16 +1,44 @@
 module.exports = function (app, db, cheerio, request){
 
     app.get("/", function(req, res){
-        if(req.session.userId){
-            db.Users.find({_id: req.session.userId}, function(err, user){
-                var login = {
-                    user: user[0].username
-                }
-                res.render("index", {login});
-            });
-        } else {
-            res.render("index");
-        }
+
+        db.Links.find().limit(10)
+        .sort({$natural: -1})
+        .exec(function(err, response){
+            if(err) throw err;
+            var resPass = [];
+            for(var i = 0; i < response.length; i++){
+                resPass.push(response[i]._id);
+            };
+            try{
+                //db.Comments.find({link: mongojs.ObjectId("5b8367649fac37590c0bcde8")}, function(err, res2){
+                db.Comments.find({link: {$in: resPass}}, function(err, res2){
+                    if(req.session.userId){
+                        db.Users.find({_id: req.session.userId}, function(err, user){
+                            // var login = {
+                            //     user: user[0].username
+                            // }
+                            
+                            var newRes = {
+                                links: response,
+                                seshId: req.session.userId,
+                                user: user[0].username,
+                            };
+                            res.render("index", {newRes});
+                        });
+                    } else {
+                        var newRes = {
+                            links: response,
+                        };
+                        res.render("index", {newRes});
+                    };
+                });
+            } catch(err) {
+                res.render("index");
+            };
+        });
+
+        
     });
 
     app.get("/login", function(req, res){

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">
-        {{#if login}}
-            Welcome <span class="text-success">{{login.user}}</span>!
+        {{#if newRes.user}}
+            Welcome <span class="text-success">{{newRes.user}}</span>!
         {{else}}
         Navbar
         {{/if}}
@@ -37,7 +37,50 @@
 
 <section class="text-center">
     <button id="da-scraper" class="btn btn-success">Scrape Articles</button>
-    <section id="dump"></section>
+    <section id="dump">
+
+
+        {{#if newRes}}
+        {{#each newRes.links}}
+        <section class="card row dump-scraper my-2 text-center p-1">
+            <div class="headline-scrape card-header">
+                <h3>{{headline}}</h3>
+            </div>
+            <div class="summary-scrape">
+                {{summary}}...
+            </div>
+            <div class="url-scrape">
+                <a href="{{url}}" target="_blank" class="mb-1">Read Me!</a>
+            </div>
+            <div class="m-2 card-footer">
+                <div id="save-article-{{_id}}">
+                    <button class="btn article-save m-1" data-id="{{_id}}">Save Article</button>
+                </div>
+                <section class="comment-dump col-12 border-top mt-3" id="{{_id}}">
+                    <button class="btn comment-view m-2" data-id="{{_id}}">Toggle Comments</button>
+                        
+                    <div class="c-view-switch" style="display: none">
+                        <div class="para-com-dump"></div>
+
+                        <div class="input-group mb-3">
+                            <textarea type="text" class="form-control" placeholder="Comment Here" aria-label="Recipient's username" aria-describedby="basic-addon2"></textarea>
+                            <div class="input-group-append">
+                                <button class="input-group-text btn c-sub" data-id="{{_id}}" id="basic-addon2">submit</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                </div>
+            </section>
+            {{/each}}
+            {{/if}}
+
+
+
+
+
+    </section>
 </section>
 
 <div class="modal" id="login-req"tabindex="-1" role="dialog">
