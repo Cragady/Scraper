@@ -1,8 +1,29 @@
+html, body, .for-background {
+    height: 100%;
+}
+
 body {
-    background: lightblue;
+    background-image: url("../assets/scraped-back.jpg");
 }
 
 .dump-scraper{
     margin-left: 20%;
     margin-right: 20%;
+}
+
+.for-background {
+    background: rgba(173, 216, 230, 0.836);
+}
+
+nav {
+    opacity: 0.8;
+}
+
+.card{
+    opacity: 0.8;
+}
+
+h1 {
+    margin-bottom: 40px;
+    margin-top: 10px;
 }
