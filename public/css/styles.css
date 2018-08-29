@@ -1,4 +1,4 @@
-html, body, .for-background {
+html, body {
     height: 100%;
 }
 
@@ -13,6 +13,7 @@ body {
 
 .for-background {
     background: rgba(173, 216, 230, 0.836);
+    min-height: 100%;
 }
 
 nav {
