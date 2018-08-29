@@ -16,8 +16,6 @@ function logCheck(){
         if(res === "login required"){
             return;
         } else {
-            console.log("arssty" + res);
-            console.log(res.arr);
             var arrIter = res.arr;
             $.each(arrIter, function(i){
                 $("#save-article-" + arrIter[i]).empty();
@@ -168,7 +166,6 @@ function comClick(){
                         $("#login-req").modal("show");
                         return;
                     };
-                    console.log("saved!");
                     logCheck();
                 });
                 break;
@@ -191,10 +188,6 @@ function comClick(){
                         $("#kaibosh-it-" + artSpecs.artId).remove();
                     };
                 });
-            case $(this).attr("id") === "view-saved":
-                console.log("hit saved arrrrss");
-                $.get("/reading-saved-arts");
-                break;
             case $(this).attr("id") === "da-scraper":
                 $.get("/link-sets", ()=>{}).then(()=>{
                     location.reload();
