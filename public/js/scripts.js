@@ -169,6 +169,7 @@ function comClick(){
                         return;
                     };
                     console.log("saved!");
+                    logCheck();
                 });
                 break;
             case $(this).hasClass("article-unsave"):
@@ -187,8 +188,12 @@ function comClick(){
                         $("#save-article-" + artSpecs.artId).append(`
                             <button class="btn article-save m-1" data-id="${artSpecs.artId}">Save Article</button>
                         `);
+                        $("#kaibosh-it-" + artSpecs.artId).remove();
                     };
                 });
+            case $(this).attr("id") === "view-saved":
+                console.log("hit saved arrrrss");
+                $.get("/reading-saved-arts");
                 break;
             case $(this).attr("id") === "da-scraper":
                 $.get("/link-sets", ()=>{}).then(()=>{

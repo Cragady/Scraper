@@ -141,6 +141,30 @@ module.exports = function(app, db, mongojs){
         };
     });
 
+    app.get("/reading-saved-arts", function(req, res){
+        if(req.session.userId){
+            db.Users.find(
+                {_id: req.session.userId},
+                function(err, found){
+                    if(err) throw err;
+                    var resPass = [];
+                    for(var i = 0; i < found[0].savedArr.length; i++){
+                        resPass.push(found[0].savedArr[i]);
+                    }
+                    db.Links.find({_id: {$in: resPass}}, function(err, savedLinks){
+                        var newRes = {
+                            links: savedLinks,
+                            seshId: req.session.userId
+                        };
+                        res.render("saved", {newRes});
+                    });
+                }
+            );
+        } else {
+            res.json("needs login");
+        };
+    });
+
     app.get("/user-chec", function(req, res){
         if(req.session.userId){
             db.Users.find({_id: req.session.userId}, function(err, founs){
