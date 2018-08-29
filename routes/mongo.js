@@ -14,7 +14,7 @@ module.exports = function(app, db, mongojs){
                 db.Users.create(userData, function(err, user){
                     if(err){
                         console.log(err);
-                        res.json("/login");
+                        res.json("invalid");
                     } else {
                         req.session.userId = user._id;
                         res.json("/");
@@ -33,7 +33,7 @@ module.exports = function(app, db, mongojs){
                 req.session.userId = userIn._id;
                 res.json("/");
             } else {
-                res.json("/login");
+                res.json("invalid");
             }
         };
 
@@ -133,7 +133,6 @@ module.exports = function(app, db, mongojs){
                 {_id: req.session.userId},
                 {$pull: {savedArr: req.body.artId}}, function(err, artUpped){
                     if(err) throw err;
-                    console.log(artUpped);
                     res.json(artUpped);
                 });
         } else {
@@ -169,7 +168,6 @@ module.exports = function(app, db, mongojs){
         if(req.session.userId){
             db.Users.find({_id: req.session.userId}, function(err, founs){
                 if(err) throw err;
-                console.log(founs.savedArr);
                 resToFront = {
                   arr: founs[0].savedArr
                 };

@@ -87,7 +87,15 @@ function comClick(){
                 };
                 $.post("/new-user-create", userCreds, ()=>{})
                 .then((data) =>{
-                    window.location.replace(data);   
+                    if(data === "invalid"){
+                        $(".message-dump").empty();
+                        $(".message-dump").append(`
+                            <p class="text-danger">Invalid username/password</p>
+                            <p class="text-danger">(Name may be taken)</p>
+                        `); 
+                    } else {
+                        window.location.replace(data);
+                    };
                 });
                 break;
             case $(this).attr("id") === "login":
@@ -97,7 +105,14 @@ function comClick(){
                 };
                 $.post("/break-in", userCreds, ()=>{})
                 .then(data =>{
-                    window.location.replace(data);
+                    if(data === "invalid"){
+                        $(".message-dump").empty();
+                        $(".message-dump").append(`
+                            <p class="text-danger">Invalid username/password</p>
+                        `); 
+                    } else {
+                        window.location.replace(data);
+                    };
                 })
                 break;
             case $(this).attr("id") === "break-out":
